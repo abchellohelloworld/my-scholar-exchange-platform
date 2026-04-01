@@ -211,8 +211,5 @@ def send_message(recipient_id):
         return redirect(url_for('messages'))
     return render_template('send_message.html', form=form, recipient=recipient)
 
-# --- 应用启动 ---
-if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
-    app.run(debug=True)
+# 移除了原来的 app.run() 部分，让 Gunicorn 来运行应用
+# 在生产环境中，不需要直接调用 app.run()
