@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>{{ post.title }}</h1>
+<div class="card mb-4">
+    <div class="card-body">
+        <p class="card-text">{{ post.content }}</p>
+        <!-- 修改：将帖子作者名改为可点击的私信链接 -->
+        <p class="text-muted">Posted by 
+            <a href="{{ url_for('send_message', recipient_id=post.author.id) }}">
+                {{ post.author.username }}
+            </a> 
+            on {{ post.timestamp.strftime('%Y-%m-%d %H:%M') }}
+        </p>
+        {% if current_user == post.author %}
+            <a href="{{ url_for('delete_post', id=post.id) }}" class="btn btn-danger btn-sm">Delete Post</a>
+        {% endif %}
+    </div>
+</div>
+
+<h2>Comments</h2>
+{% for comment in comments %}
+<div class="card mb-2">
+    <div class="card-body">
+        <!-- 修改：将评论作者名改为可点击的私信链接 -->
+        <h5 class="card-title">
+            <a href="{{ url_for('send_message', recipient_id=comment.author.id) }}">
+                {{ comment.author.username }}
+            </a>
+        </h5>
+        <p class="card-text">{{ comment.content }}</p>
+        <small class="text-muted">Posted on {{ comment.timestamp.strftime('%Y-%m-%d %H:%M') }}</small>
+        {% if current_user == comment.author %}
+            <a href="{{ url_for('delete_comment', id=comment.id) }}" class="btn btn-danger btn-sm">Delete</a>
+        {% endif %}
+    </div>
+</div>
+{% endfor %}
+
+<h3>Add a comment</h3>
+<form method="POST" action="">
+    {{ form.hidden_tag() }}
+    <div class="mb-3">
+        {{ form.content.label(class="form-label") }}
+        {{ form.content(class="form-control", rows="3") }}
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+<a href="{{ url_for('index') }}" class="btn btn-secondary mt-3">Back to Home</a>
+{% endblock %}

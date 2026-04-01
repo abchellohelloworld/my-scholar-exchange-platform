@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Messages</h1>
+
+<h2>Received Messages</h2>
+{% for message in received_messages %}
+<div class="card mb-3">
+    <div class="card-body">
+        <h5 class="card-title">From: {{ message.sender.username }}</h5>
+        <h6 class="card-subtitle mb-2 text-muted">{{ message.title }}</h6>
+        <p class="card-text">{{ message.body[:100] }}{% if message.body|length > 100 %}...{% endif %}</p>
+        <small class="text-muted">On {{ message.timestamp.strftime('%Y-%m-%d %H:%M') }}</small>
+        <!-- 在此处添加回复按钮 -->
+        <div class="mt-2">
+            <a href="{{ url_for('send_message', recipient_id=message.sender.id) }}" class="btn btn-sm btn-outline-primary">Reply</a>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+<h2>Sent Messages</h2>
+{% for message in sent_messages %}
+<div class="card mb-3">
+    <div class="card-body">
+        <h5 class="card-title">To: {{ message.recipient.username }}</h5>
+        <h6 class="card-subtitle mb-2 text-muted">{{ message.title }}</h6>
+        <p class="card-text">{{ message.body[:100] }}{% if message.body|length > 100 %}...{% endif %}</p>
+        <small class="text-muted">On {{ message.timestamp.strftime('%Y-%m-%d %H:%M') }}</small>
+        <!-- 在此处添加重新联系按钮 -->
+        <div class="mt-2">
+            <a href="{{ url_for('send_message', recipient_id=message.recipient.id) }}" class="btn btn-sm btn-outline-secondary">Contact Again</a>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+<!-- 将“New Message”的链接更新为动态获取用户ID，例如跳转到用户列表 -->
+<p><a href="{{ url_for('index') }}" class="btn btn-primary">New Message</a></p>
+{% endblock %}
